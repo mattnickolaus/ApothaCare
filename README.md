@@ -1,12 +1,7 @@
-# ApothaCare >> README.md
-git init
-git add README.md
-git commit -m first commit
-git branch -M main
-git remote add origin https://github.com/mattnickolaus/ApothaCare.git
-git push -u origin main
+# ApothaCare
 
+A new Flutter project.
 
+## Getting Started
 
-
-echo # ApothaCare
+FlutterFlow projects are built to run on the Flutter _stable_ release.

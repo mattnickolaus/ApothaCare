@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "94645696985",
+    "project_id": "apotha-care-h5edpz",
+    "storage_bucket": "apotha-care-h5edpz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94645696985:android:343f8a0ed13e82679581c8",
+        "android_client_info": {
+          "package_name": "com.mycompany.apothacare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCroI1Z0kyTJYAdEmYeJoxP4kFL-KBh-UQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
