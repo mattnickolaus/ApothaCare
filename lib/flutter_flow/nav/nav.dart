@@ -72,13 +72,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? const MedicationWidget() : const LoginWidget(),
+          appStateNotifier.loggedIn ? const MedicationTasksWidget() : const LoginWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) =>
-              appStateNotifier.loggedIn ? const MedicationWidget() : const LoginWidget(),
+          builder: (context, _) => appStateNotifier.loggedIn
+              ? const MedicationTasksWidget()
+              : const LoginWidget(),
         ),
         FFRoute(
           name: 'login',
@@ -86,9 +87,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => const LoginWidget(),
         ),
         FFRoute(
-          name: 'Medication',
-          path: '/medication',
-          builder: (context, params) => const MedicationWidget(),
+          name: 'medication-tasks',
+          path: '/medicationTasks',
+          builder: (context, params) => const MedicationTasksWidget(),
+        ),
+        FFRoute(
+          name: 'onboarding',
+          path: '/onboarding',
+          builder: (context, params) => const OnboardingWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

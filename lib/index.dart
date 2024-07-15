@@ -1,3 +1,5 @@
 // Export pages
 export '/login/login_widget.dart' show LoginWidget;
-export '/medication/medication_widget.dart' show MedicationWidget;
+export '/medication_tasks/medication_tasks_widget.dart'
+    show MedicationTasksWidget;
+export '/onboarding/onboarding_widget.dart' show OnboardingWidget;
