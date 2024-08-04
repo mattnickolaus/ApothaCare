@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '/auth/base_auth_user_provider.dart';
 
 import '/index.dart';
+import '/main.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
@@ -72,14 +73,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? const MedicationTasksWidget() : const LoginWidget(),
+          appStateNotifier.loggedIn ? const NavBarPage() : const LoginWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => appStateNotifier.loggedIn
-              ? const MedicationTasksWidget()
-              : const LoginWidget(),
+          builder: (context, _) =>
+              appStateNotifier.loggedIn ? const NavBarPage() : const LoginWidget(),
         ),
         FFRoute(
           name: 'login',
@@ -89,12 +89,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'medication-tasks',
           path: '/medicationTasks',
-          builder: (context, params) => const MedicationTasksWidget(),
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'medication-tasks')
+              : const MedicationTasksWidget(),
         ),
         FFRoute(
           name: 'onboarding',
           path: '/onboarding',
           builder: (context, params) => const OnboardingWidget(),
+        ),
+        FFRoute(
+          name: 'Profile',
+          path: '/profile',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'Profile')
+              : const ProfileWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

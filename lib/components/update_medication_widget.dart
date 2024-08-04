@@ -1,4 +1,3 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_count_controller.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -9,18 +8,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'add_medication_model.dart';
-export 'add_medication_model.dart';
+import 'update_medication_model.dart';
+export 'update_medication_model.dart';
 
-class AddMedicationWidget extends StatefulWidget {
-  const AddMedicationWidget({super.key});
+class UpdateMedicationWidget extends StatefulWidget {
+  const UpdateMedicationWidget({
+    super.key,
+    required this.drugDoc,
+  });
+
+  final DrugsRecord? drugDoc;
 
   @override
-  State<AddMedicationWidget> createState() => _AddMedicationWidgetState();
+  State<UpdateMedicationWidget> createState() => _UpdateMedicationWidgetState();
 }
 
-class _AddMedicationWidgetState extends State<AddMedicationWidget> {
-  late AddMedicationModel _model;
+class _UpdateMedicationWidgetState extends State<UpdateMedicationWidget> {
+  late UpdateMedicationModel _model;
 
   @override
   void setState(VoidCallback callback) {
@@ -31,12 +35,14 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AddMedicationModel());
+    _model = createModel(context, () => UpdateMedicationModel());
 
-    _model.drugNameTextController ??= TextEditingController();
+    _model.drugNameTextController ??=
+        TextEditingController(text: widget.drugDoc?.drugName);
     _model.drugNameFocusNode ??= FocusNode();
 
-    _model.medicationDetailsTextController ??= TextEditingController();
+    _model.medicationDetailsTextController ??=
+        TextEditingController(text: widget.drugDoc?.details);
     _model.medicationDetailsFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
@@ -96,7 +102,7 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
                 ],
               ),
               Text(
-                'New Medication',
+                'Update Medication',
                 style: FlutterFlowTheme.of(context).headlineLarge.override(
                       fontFamily: 'Inter',
                       fontSize: 28.0,
@@ -234,7 +240,8 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
                                     letterSpacing: 0.0,
                                   ),
                         ),
-                        count: _model.dosageCounterValue ??= 100,
+                        count: _model.dosageCounterValue ??=
+                            widget.drugDoc!.dosage,
                         updateCount: (count) =>
                             setState(() => _model.dosageCounterValue = count),
                         stepSize: 50,
@@ -311,7 +318,8 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
                                     letterSpacing: 0.0,
                                   ),
                         ),
-                        count: _model.pillsCounterValue ??= 30,
+                        count: _model.pillsCounterValue ??=
+                            widget.drugDoc!.numberOfPills,
                         updateCount: (count) =>
                             setState(() => _model.pillsCounterValue = count),
                         stepSize: 1,
@@ -416,7 +424,9 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
                                       child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.time,
                                         minimumDate: DateTime(1900),
-                                        initialDateTime: getCurrentTimestamp,
+                                        initialDateTime:
+                                            (widget.drugDoc?.scheduledTime ??
+                                                DateTime.now()),
                                         maximumDate: DateTime(2050),
                                         backgroundColor:
                                             FlutterFlowTheme.of(context)
@@ -509,27 +519,51 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
               ),
               FFButtonWidget(
                 onPressed: () async {
+                  await widget.drugDoc!.reference.delete();
+                  Navigator.pop(context);
+                },
+                text: 'Delete Medication',
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: FlutterFlowTheme.of(context).error,
+                  size: 20.0,
+                ),
+                options: FFButtonOptions(
+                  height: 40.0,
+                  padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                  iconPadding:
+                      const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        fontFamily: 'Inter',
+                        color: FlutterFlowTheme.of(context).error,
+                        letterSpacing: 0.0,
+                      ),
+                  elevation: 3.0,
+                  borderSide: BorderSide(
+                    color: FlutterFlowTheme.of(context).error,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              FFButtonWidget(
+                onPressed: () async {
                   if (_model.formKey.currentState == null ||
                       !_model.formKey.currentState!.validate()) {
                     return;
                   }
-                  if (!(_model.datePicked?.secondsSinceEpoch != null)) {
-                    return;
-                  }
 
-                  await DrugsRecord.collection.doc().set({
+                  await widget.drugDoc!.reference.update({
                     ...createDrugsRecordData(
-                      drugName: valueOrDefault<String>(
-                        _model.drugNameTextController.text,
-                        'Name',
-                      ),
-                      dosage: _model.dosageCounterValue,
-                      numberOfPills: _model.pillsCounterValue,
+                      drugName: _model.drugNameTextController.text,
                       scheduledTime: _model.datePicked,
+                      dosage: _model.dosageCounterValue,
                       details: _model.medicationDetailsTextController.text,
                       wasTaken: false,
-                      user: currentUserReference,
-                      created: getCurrentTimestamp,
+                      user: widget.drugDoc?.user,
+                      created: widget.drugDoc?.created,
+                      numberOfPills: _model.pillsCounterValue,
                     ),
                     ...mapToFirestore(
                       {
@@ -539,7 +573,7 @@ class _AddMedicationWidgetState extends State<AddMedicationWidget> {
                   });
                   Navigator.pop(context);
                 },
-                text: 'Add Medication',
+                text: 'Update Medication',
                 icon: const Icon(
                   Icons.add,
                   size: 15.0,
