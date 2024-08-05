@@ -1,7 +1,6 @@
 # ApothaCare
 
-A new Flutter project.
-
+Live Site: 
 https://apothacare.flutterflow.app/
 
 ## Getting Started
