@@ -1,9 +1,9 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'add_medication_widget.dart' show AddMedicationWidget;
+import 'update_medication_widget.dart' show UpdateMedicationWidget;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AddMedicationModel extends FlutterFlowModel<AddMedicationWidget> {
+class UpdateMedicationModel extends FlutterFlowModel<UpdateMedicationWidget> {
   ///  State fields for stateful widgets in this component.
 
   final formKey = GlobalKey<FormState>();

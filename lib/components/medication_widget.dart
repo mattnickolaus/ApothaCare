@@ -1,3 +1,6 @@
+import '/backend/backend.dart';
+import '/components/update_medication_widget.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,7 @@ class MedicationWidget extends StatefulWidget {
     this.details,
     required this.wasTaken,
     this.timeTaken,
+    this.drugDoc,
   });
 
   final String? drugName;
@@ -23,6 +27,7 @@ class MedicationWidget extends StatefulWidget {
   final String? details;
   final bool? wasTaken;
   final DateTime? timeTaken;
+  final DrugsRecord? drugDoc;
 
   @override
   State<MedicationWidget> createState() => _MedicationWidgetState();
@@ -41,6 +46,8 @@ class _MedicationWidgetState extends State<MedicationWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => MedicationModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -234,6 +241,33 @@ class _MedicationWidgetState extends State<MedicationWidget> {
                                 onChanged: (newValue) async {
                                   setState(
                                       () => _model.checkboxValue = newValue!);
+                                  if (newValue!) {
+                                    await widget.drugDoc!.reference
+                                        .update(createDrugsRecordData(
+                                      timeTaken: getCurrentTimestamp,
+                                    ));
+
+                                    await widget.drugDoc!.reference
+                                        .update(createDrugsRecordData(
+                                      wasTaken: false,
+                                    ));
+                                    if (_model.checkboxValue == true) {
+                                      await widget.drugDoc!.reference
+                                          .update(createDrugsRecordData(
+                                        wasTaken: _model.checkboxValue,
+                                      ));
+                                    } else {
+                                      await widget.drugDoc!.reference
+                                          .update(createDrugsRecordData(
+                                        wasTaken: false,
+                                      ));
+                                    }
+                                  } else {
+                                    await widget.drugDoc!.reference
+                                        .update(createDrugsRecordData(
+                                      wasTaken: false,
+                                    ));
+                                  }
                                 },
                                 side: BorderSide(
                                   width: 2,
@@ -305,45 +339,48 @@ class _MedicationWidgetState extends State<MedicationWidget> {
                       Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Container(
-                            width: 300.0,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF1969D),
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: const Color(0xFFB3242F),
-                                width: 1.0,
+                          if ((widget.scheduledTime!.secondsSinceEpoch <
+                                  getCurrentTimestamp.secondsSinceEpoch) &&
+                              !widget.wasTaken!)
+                            Container(
+                              width: 300.0,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1969D),
+                                borderRadius: BorderRadius.circular(24.0),
+                                border: Border.all(
+                                  color: const Color(0xFFB3242F),
+                                  width: 1.0,
+                                ),
                               ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  5.0, 5.0, 5.0, 5.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        5.0, 0.0, 0.0, 0.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Text(
-                                          'Previous Dose Missed!',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                color: const Color(0xFFB3242F),
-                                                letterSpacing: 0.0,
-                                              ),
-                                        ),
-                                      ],
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    5.0, 5.0, 5.0, 5.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          5.0, 0.0, 0.0, 0.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Text(
+                                            'Previous Dose Missed!',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: const Color(0xFFB3242F),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ].divide(const SizedBox(height: 3.0)),
@@ -351,16 +388,32 @@ class _MedicationWidgetState extends State<MedicationWidget> {
                 ),
                 Column(
                   mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                      child: Icon(
+                    FlutterFlowIconButton(
+                      borderRadius: 20.0,
+                      borderWidth: 1.0,
+                      buttonSize: 40.0,
+                      icon: const Icon(
                         Icons.edit_outlined,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 30.0,
+                        color: Color(0xFF959595),
+                        size: 20.0,
                       ),
+                      onPressed: () async {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: MediaQuery.viewInsetsOf(context),
+                              child: UpdateMedicationWidget(
+                                drugDoc: widget.drugDoc!,
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
+                      },
                     ),
                   ],
                 ),
