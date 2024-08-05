@@ -359,10 +359,7 @@ class _UpdateMedicationWidgetState extends State<UpdateMedicationWidget> {
                                 ),
                           ),
                           Text(
-                            valueOrDefault<String>(
-                              dateTimeFormat('jm', _model.datePicked),
-                              '8:00AM',
-                            ),
+                            dateTimeFormat('jm', _model.datePicked),
                             style: FlutterFlowTheme.of(context)
                                 .titleLarge
                                 .override(
