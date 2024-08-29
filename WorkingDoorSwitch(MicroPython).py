@@ -16,8 +16,8 @@ except Exception as e:
 
 # Check if Firebase configuration is successful
 try:
-    wmc.setdb_to_firebase(host="https://apotha-care-h5edpz-default-rtdb.firebaseio.com/",
-                          auth="H1ffIaVEoqDEIgRecEQ2LuZtj0vFJdHpk5irZE9n", tree="pico")
+    wmc.setdb_to_firebase(host="----",
+                          auth="----", tree="pico")
     print("Firebase configured successfully")
 except Exception as e:
     print("Error setting Firebase:", e)
